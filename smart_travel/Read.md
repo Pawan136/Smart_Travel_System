@@ -28,18 +28,6 @@ python server.py
 
 ---
 
-## Key Bugs Fixed From Previous Version
-
-| Bug | Fix |
-|-----|-----|
-| Bare number "4" not recognized as passenger count | Added `awaiting_slot` context to classifier — knows what we're collecting |
-| Unknown cities (Bhopal, Varanasi) not recognized | Added 30+ Indian cities to CITY_MAP |
-| "Rahul Verma" not parsed as name | Detects bare multi-word text as name when `awaiting_slot="name"` |
-| Loop on passenger slot | Engine tracks what slot it last asked for and routes bare values correctly |
-| State machine broken after slot collection | Fixed COLLECTING_PAX routing — no longer falls through to search |
-
----
-
 ## Required Scenarios — All Working
 
 ### Scenario 1: Full Flight Booking (3 steps)
