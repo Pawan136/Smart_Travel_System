@@ -7,7 +7,7 @@ AI Intelligence Layer
 Architecture & Design Document
 
 
-Version 2.0  ·  February 2026
+February 2026
 
 
 # **1. Executive Summary**
@@ -594,5 +594,4 @@ def classify(text, awaiting\_slot=None) -> IntentResult:
 |Production thinking|6/10|9/10|Scalability section, modular design, typed models|
 
 
-Smart Travel Companion  ·  AI Intelligence Layer  ·  v2.0  ·  February 2026
-Confidential — Take-Home Assessment  v2.0	Page 
+Smart Travel Companion  ·  AI Intelligence Layer  ·  February 2026
