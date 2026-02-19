@@ -6,9 +6,6 @@ Includes a **beautiful web UI** + clean backend engine.
 
 ---
 
-## Application Screenshot
-
-![Smart Travel Companion Screenshot](https://drive.google.com/file/d/1VShILxRtvuo6_VSpmZRaJic5cSOkrArs/view?usp=sharing)
 
 ## Setup & Run
 
