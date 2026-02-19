@@ -580,18 +580,4 @@ def classify(text, awaiting\_slot=None) -> IntentResult:
 |stdlib-only HTTP server fallback|Zero dependencies for demo. Works with Python 3.8+ out of the box.|Flask-only — requires installation, fails if pip unavailable|
 
 
-# **14. Evaluation Against Assignment Rubric**
-
-|**Criteria**|**Previous v1 Score**|**Current v2 Score**|**Evidence**|
-| :- | :- | :- | :- |
-|Architecture intent|7/10|9/10|Clean separation: models, intent, engine, API, UI|
-|Basic CLI / UI|6/10|9/10|Full web UI with rich cards + memory panel|
-|Memory modeling|5/10|10/10|Slot dataclass with status lifecycle, full hierarchy|
-|State machine reliability|4/10|10/10|All 3 scenarios pass end-to-end including edge cases|
-|Context switching|N/T|10/10|Both contexts preserved at exact step — swap O(1)|
-|Reconfirmation logic|Fail|10/10|Auto-invalidate + re-search on param change|
-|Context-aware queries|N/T|10/10|Answers from stored results — zero re-API calls|
-|Production thinking|6/10|9/10|Scalability section, modular design, typed models|
-
-
 Smart Travel Companion  ·  AI Intelligence Layer  ·  February 2026
