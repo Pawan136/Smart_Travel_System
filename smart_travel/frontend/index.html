@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Travel Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0f1a;
+  --surface: #111827;
+  --surface2: #1a2436;
+  --border: #1f2f45;
+  --accent: #3b82f6;
+  --accent2: #6366f1;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --font: 'DM Sans', sans-serif;
+  --font-display: 'Playfair Display', serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── SIDEBAR ───────────────────────────────────────── */
+.sidebar {
+  width: 280px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo h1 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.3;
+}
+.sidebar-logo p {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sidebar-section {
+  padding: 16px 20px 8px;
+}
+.sidebar-section-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
+
+.quick-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-family: var(--font);
+  font-size: 13px;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 2px;
+}
+.quick-btn:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+.quick-btn .icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.quick-btn.flight .icon { background: rgba(59,130,246,0.15); }
+.quick-btn.hotel .icon  { background: rgba(16,185,129,0.15); }
+.quick-btn.help .icon   { background: rgba(245,158,11,0.15); }
+
+/* Memory panel */
+.memory-panel {
+  margin: 12px 20px;
+  padding: 14px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  flex: 1;
+  overflow-y: auto;
+}
+.memory-panel-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  margin-bottom: 12px;
+}
+.mem-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.mem-label { color: var(--text3); }
+.mem-val   { color: var(--text); font-family: var(--font-mono); font-size: 11px; }
+.mem-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+.badge-flight  { background: rgba(59,130,246,0.2); color: #60a5fa; }
+.badge-hotel   { background: rgba(16,185,129,0.2); color: #34d399; }
+.badge-none    { background: rgba(100,116,139,0.2); color: var(--text3); }
+.badge-filled  { background: rgba(16,185,129,0.15); color: #34d399; }
+.badge-empty   { background: rgba(100,116,139,0.1); color: var(--text3); }
+.badge-stale   { background: rgba(245,158,11,0.15); color: #fbbf24; }
+
+.sidebar-reset {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+.reset-btn {
+  width: 100%;
+  padding: 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  font-family: var(--font);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.reset-btn:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(239,68,68,0.05);
+}
+
+/* ── MAIN CHAT ────────────────────────────────────── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.chat-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.chat-header p {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 1px;
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── MESSAGES ─────────────────────────────────────── */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+
+.messages::-webkit-scrollbar { width: 4px; }
+.messages::-webkit-scrollbar-track { background: transparent; }
+.messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Bubble wrapper */
+.msg-wrap {
+  display: flex;
+  gap: 12px;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.msg-wrap.user {
+  flex-direction: row-reverse;
+}
+
+.msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.msg-avatar.ai {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+}
+.msg-avatar.user-av {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+}
+
+.msg-content { max-width: 70%; }
+.msg-wrap.user .msg-content { align-items: flex-end; }
+
+.bubble {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.bubble.ai {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top-left-radius: 4px;
+}
+.bubble.user {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  border-top-right-radius: 4px;
+  color: #fff;
+}
+.bubble.warning {
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  color: #fbbf24;
+}
+.bubble.asking {
+  background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(99,102,241,0.08));
+  border: 1px solid rgba(59,130,246,0.3);
+}
+.asking-hint {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Markdown-like */
+.bubble strong, .bubble b {
+  font-weight: 600;
+  color: #93c5fd;
+}
+.bubble.user strong { color: #bfdbfe; }
+.bubble em { font-style: italic; color: #a5b4fc; }
+.bubble code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+/* ── FLIGHT RESULTS CARD ──────────────────────────── */
+.cards-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 560px;
+}
+
+.flight-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.flight-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 4px 20px rgba(59,130,246,0.1);
+}
+.flight-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.flight-card:hover::before { opacity: 1; }
+
+.fc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.fc-option {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(59,130,246,0.1);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.fc-airline { text-align: right; }
+.fc-airline-name { font-weight: 600; font-size: 14px; }
+.fc-airline-no   { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
+
+.fc-route {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.fc-airport { text-align: center; }
+.fc-time    { font-size: 22px; font-weight: 700; font-family: var(--font-display); }
+.fc-code    { font-size: 11px; color: var(--text3); font-family: var(--font-mono); margin-top: 2px; }
+.fc-line    { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
+.fc-line::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: var(--border);
+}
+.fc-dur {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  color: var(--text3);
+  position: relative;
+  white-space: nowrap;
+}
+.fc-stops {
+  font-size: 10px;
+  text-align: center;
+  margin-top: 4px;
+  color: var(--green);
+}
+
+.fc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.fc-price  { font-size: 20px; font-weight: 700; color: var(--gold); }
+.fc-price-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.fc-badge-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.fc-badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.fc-badge.refund  { background: rgba(16,185,129,0.15); color: #34d399; }
+.fc-badge.no-refund { background: rgba(239,68,68,0.1); color: #f87171; }
+.fc-badge.class   { background: rgba(99,102,241,0.15); color: #a5b4fc; }
+.fc-seats { font-size: 10px; color: var(--text3); margin-top: 6px; text-align: right; }
+
+/* ── HOTEL RESULTS CARD ───────────────────────────── */
+.hotel-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.hotel-card:hover {
+  border-color: var(--green);
+  box-shadow: 0 0 0 1px var(--green), 0 4px 20px rgba(16,185,129,0.1);
+}
+.hotel-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #10b981, #059669);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.hotel-card:hover::before { opacity: 1; }
+
+.hc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.hc-option {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--green);
+  font-weight: 600;
+  background: rgba(16,185,129,0.1);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.hc-name  { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+.hc-stars { color: var(--gold); font-size: 12px; }
+.hc-location { font-size: 12px; color: var(--text3); margin-bottom: 10px; }
+.hc-room  { font-size: 12px; color: var(--accent); margin-bottom: 10px; }
+
+.hc-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.hc-amenity {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.hc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.hc-price    { font-size: 20px; font-weight: 700; color: var(--gold); }
+.hc-price-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.hc-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+}
+.hc-rating-star { color: var(--gold); }
+.hc-reviews { font-size: 11px; color: var(--text3); }
+
+/* ── DETAIL CARDS ─────────────────────────────────── */
+.detail-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: 520px;
+}
+.detail-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+.detail-label { color: var(--text3); }
+.detail-val   { font-weight: 500; text-align: right; }
+.detail-section {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.detail-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
+.fare-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+  padding: 6px 0;
+}
+.fare-total {
+  border-top: 1px solid var(--border);
+  margin-top: 6px;
+  padding-top: 10px;
+  font-weight: 700;
+  font-size: 16px;
+}
+.fare-total .detail-val { color: var(--gold); }
+
+.amenity-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.amenity-item {
+  font-size: 12px;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.amenity-item::before {
+  content: '✓';
+  color: var(--green);
+  font-size: 10px;
+}
+
+/* ── BOOKING CONFIRM ──────────────────────────────── */
+.booking-confirm {
+  background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.05));
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 480px;
+  position: relative;
+  overflow: hidden;
+}
+.booking-confirm::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+}
+.booking-check {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(16,185,129,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+.booking-ref {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.booking-sub {
+  font-size: 12px;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+.booking-details {
+  background: rgba(0,0,0,0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+}
+.booking-detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 0;
+}
+.bd-label { color: var(--text3); }
+.bd-val   { font-weight: 500; color: var(--text); }
+.booking-amount {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(16,185,129,0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.booking-amount-val {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--green);
+}
+
+/* ── MEMORY SNAPSHOT ──────────────────────────────── */
+.memory-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  max-width: 480px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+.memory-card pre {
+  color: var(--text2);
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* ── HELP CARD ────────────────────────────────────── */
+.help-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: 520px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* ── SUMMARY CARD ─────────────────────────────────── */
+.summary-card {
+  background: var(--surface2);
+  border: 1px solid rgba(59,130,246,0.4);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: 480px;
+}
+.summary-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: #93c5fd;
+}
+
+/* ── INPUT AREA ───────────────────────────────────── */
+.input-area {
+  padding: 16px 32px 24px;
+  border-top: 1px solid var(--border);
+}
+.input-context {
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.input-context-badge {
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  background: rgba(59,130,246,0.15);
+  color: #60a5fa;
+}
+.input-wrap {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+.input-box {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+  max-height: 120px;
+  line-height: 1.5;
+}
+.input-box:focus { border-color: var(--accent); }
+.input-box::placeholder { color: var(--text3); }
+
+.send-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #3b82f6, #4f46e5);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 14px rgba(59,130,246,0.4); }
+.send-btn:active { transform: scale(0.97); }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Typing indicator */
+.typing-wrap {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.typing-bubble {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  border-top-left-radius: 4px;
+  padding: 14px 18px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.typing-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--text3);
+  border-radius: 50%;
+  animation: typing 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50%       { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ── WELCOME ──────────────────────────────────────── */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 32px;
+  flex: 1;
+}
+.welcome-icon {
+  font-size: 56px;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+.welcome h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa, #f0abfc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+.welcome p {
+  color: var(--text2);
+  font-size: 15px;
+  max-width: 440px;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+.welcome-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 520px;
+}
+.chip {
+  padding: 9px 16px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text2);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: rgba(59,130,246,0.08);
+}
+.chip span { margin-right: 6px; }
+
+/* ── MOBILE RESPONSIVE ────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .messages { padding: 16px; }
+  .input-area { padding: 12px 16px 20px; }
+  .chat-header { padding: 16px; }
+  .msg-content { max-width: 88%; }
+  .cards-wrap { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Smart Travel Companion</h1>
+    <p>AI Intelligence Layer</p>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Quick Start</div>
+    <button class="quick-btn flight" onclick="sendQuick('Book a flight from Delhi to Mumbai on 2026-03-20 for 2 passengers')">
+      <div class="icon">✈</div> Book a Flight
+    </button>
+    <button class="quick-btn hotel" onclick="sendQuick('Find hotels in Goa, check-in 2026-03-20, check-out 2026-03-25, 2 guests')">
+      <div class="icon">🏨</div> Find a Hotel
+    </button>
+    <button class="quick-btn help" onclick="sendQuick('help')">
+      <div class="icon">❓</div> Help & Commands
+    </button>
+  </div>
+
+  <div style="padding: 12px 20px 6px;">
+    <div class="sidebar-section-title">Session Memory</div>
+  </div>
+  <div class="memory-panel" id="memoryPanel">
+    <div style="color: var(--text3); font-size: 12px; text-align: center; margin-top: 20px;">
+      Start a conversation to see memory
+    </div>
+  </div>
+
+  <div class="sidebar-reset">
+    <button class="reset-btn" onclick="resetSession()">↺ New Session</button>
+  </div>
+</div>
+
+<!-- MAIN CHAT -->
+<div class="main">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <div class="avatar">✈</div>
+      <div>
+        <h2>Travel Companion</h2>
+        <p>AI-powered booking assistant</p>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="status-dot"></div>
+      <span style="font-size: 12px; color: var(--text3);">Online</span>
+    </div>
+  </div>
+
+  <div class="messages" id="messages">
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">🌍</div>
+      <h2>Where to next?</h2>
+      <p>I'm your AI travel companion. I can book flights, find hotels, switch between them, and never forget what you've told me.</p>
+      <div class="welcome-chips">
+        <div class="chip" onclick="sendQuick('Book a flight from Delhi to Mumbai on 2026-03-20 for 2 passengers')">
+          <span>✈</span> Delhi → Mumbai
+        </div>
+        <div class="chip" onclick="sendQuick('Find hotels in Goa, check-in 2026-03-15, check-out 2026-03-20, 2 guests')">
+          <span>🏖</span> Hotels in Goa
+        </div>
+        <div class="chip" onclick="sendQuick('I want to fly from Delhi to Bangalore')">
+          <span>✈</span> Delhi → Bangalore
+        </div>
+        <div class="chip" onclick="sendQuick('Find hotels in Mumbai for 3 nights')">
+          <span>🏙</span> Hotels in Mumbai
+        </div>
+        <div class="chip" onclick="sendQuick('help')">
+          <span>💡</span> See all commands
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="input-context" id="inputContext" style="display:none;">
+      <span>Active:</span>
+      <span class="input-context-badge" id="contextBadge">flight</span>
+      <span id="contextHint"></span>
+    </div>
+    <div class="input-wrap">
+      <textarea
+        id="inputBox"
+        class="input-box"
+        placeholder="Ask me to book a flight or hotel..."
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SESSION_ID = 'sess_' + Math.random().toString(36).substr(2, 8);
+let isLoading = false;
+
+// ── Utilities ─────────────────────────────────────────────────
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function scrollBottom() {
+  const m = document.getElementById('messages');
+  m.scrollTop = m.scrollHeight;
+}
+
+// ── Send / Receive ─────────────────────────────────────────────
+
+async function sendMessage() {
+  const box = document.getElementById('inputBox');
+  const msg = box.value.trim();
+  if (!msg || isLoading) return;
+
+  box.value = '';
+  box.style.height = 'auto';
+  hideWelcome();
+  addUserBubble(msg);
+
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  showTyping();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({session_id: SESSION_ID, message: msg}),
+    });
+    const data = await res.json();
+    hideTyping();
+    if (data.responses) {
+      for (const r of data.responses) {
+        await renderResponse(r);
+        await sleep(80);
+      }
+    }
+    updateMemory();
+  } catch(e) {
+    hideTyping();
+    addAIBubble('⚠ Connection error. Is the server running?', 'warning');
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('inputBox').focus();
+}
+
+function sendQuick(msg) {
+  document.getElementById('inputBox').value = msg;
+  sendMessage();
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── Welcome ────────────────────────────────────────────────────
+
+function hideWelcome() {
+  const w = document.getElementById('welcome');
+  if (w) w.remove();
+}
+
+// ── Message rendering ──────────────────────────────────────────
+
+function addUserBubble(text) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap user';
+  wrap.innerHTML = `
+    <div class="msg-avatar user-av">👤</div>
+    <div class="msg-content">
+      <div class="bubble user">${escHtml(text)}</div>
+    </div>`;
+  document.getElementById('messages').appendChild(wrap);
+  scrollBottom();
+}
+
+function addAIBubble(text, type = 'ai') {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap';
+  const cls = type === 'warning' ? 'warning' : (type === 'asking' ? 'asking' : 'ai');
+  wrap.innerHTML = `
+    <div class="msg-avatar ai">✈</div>
+    <div class="msg-content">
+      <div class="bubble ${cls}">${renderMarkdown(text)}</div>
+    </div>`;
+  document.getElementById('messages').appendChild(wrap);
+  scrollBottom();
+  return wrap;
+}
+
+function addAICard(html, type = 'ai') {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap';
+  wrap.innerHTML = `
+    <div class="msg-avatar ai">✈</div>
+    <div class="msg-content">${html}</div>`;
+  document.getElementById('messages').appendChild(wrap);
+  scrollBottom();
+}
+
+async function renderResponse(r) {
+  switch(r.type) {
+    case 'message':
+    case 'switch_notice':
+    case 'resume_notice':
+      addAIBubble(r.text); break;
+
+    case 'warning':
+      addAIBubble(r.text, 'warning'); break;
+
+    case 'asking':
+      renderAsking(r); break;
+
+    case 'flight_results':
+      addAICard(renderFlightResults(r.data.flights)); break;
+
+    case 'hotel_results':
+      addAICard(renderHotelResults(r.data.hotels)); break;
+
+    case 'flight_details':
+      addAICard(renderFlightDetails(r.data.flight)); break;
+
+    case 'hotel_details':
+      addAICard(renderHotelDetails(r.data.hotel)); break;
+
+    case 'booking_summary':
+      addAICard(renderBookingSummary(r.data, 'flight')); break;
+
+    case 'hotel_booking_summary':
+      addAICard(renderBookingSummary(r.data, 'hotel')); break;
+
+    case 'booking_confirm':
+      addAICard(renderBookingConfirm(r.data.booking, r.data.service)); break;
+
+    case 'memory_snapshot':
+      addAICard(renderMemorySnapshot(r.data)); break;
+
+    case 'help':
+      addAICard(`<div class="help-card">${renderMarkdown(r.text)}</div>`); break;
+
+    default:
+      if (r.text) addAIBubble(r.text);
+  }
+
+  // Update context bar
+  if (r.meta) updateContextBar(r.meta, r);
+}
+
+function renderAsking(r) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap';
+  const hint = r.data?.hint ? `<div class="asking-hint">${escHtml(r.data.hint)}</div>` : '';
+  wrap.innerHTML = `
+    <div class="msg-avatar ai">✈</div>
+    <div class="msg-content">
+      <div class="bubble asking">
+        ${renderMarkdown(r.text)}
+        ${hint}
+      </div>
+    </div>`;
+  document.getElementById('messages').appendChild(wrap);
+  scrollBottom();
+}
+
+// ── Flight results rendering ───────────────────────────────────
+
+function renderFlightResults(flights) {
+  const cards = flights.map((f, i) => {
+    const refundBadge = f.refundable
+      ? `<span class="fc-badge refund">✓ Refundable</span>`
+      : `<span class="fc-badge no-refund">✗ Non-refundable</span>`;
+    return `
+      <div class="flight-card" onclick="sendQuick('Option ${i+1}')">
+        <div class="fc-header">
+          <span class="fc-option">Option ${i+1}</span>
+          <div class="fc-airline">
+            <div class="fc-airline-name">${escHtml(f.airline)}</div>
+            <div class="fc-airline-no">${escHtml(f.flight_no)}</div>
+          </div>
+        </div>
+        <div class="fc-route">
+          <div class="fc-airport">
+            <div class="fc-time">${escHtml(f.departure)}</div>
+            <div class="fc-code">${escHtml(f.origin)}</div>
+          </div>
+          <div class="fc-line">
+            <div class="fc-dur">${escHtml(f.duration)}</div>
+          </div>
+          <div class="fc-airport">
+            <div class="fc-time">${escHtml(f.arrival)}</div>
+            <div class="fc-code">${escHtml(f.destination)}</div>
+          </div>
+        </div>
+        <div class="fc-stops">${f.stops === 0 ? '● Non-stop' : f.stops + ' stop'}</div>
+        <div class="fc-footer">
+          <div>
+            <div class="fc-price">₹${f.fare.total.toLocaleString()}</div>
+            <div class="fc-price-sub">₹${f.fare.per_person?.toLocaleString() || (f.fare.base+f.fare.taxes).toLocaleString()} / person</div>
+          </div>
+          <div>
+            <div class="fc-badge-row">
+              ${refundBadge}
+              <span class="fc-badge class">${escHtml(f.class)}</span>
+            </div>
+            <div class="fc-seats">${f.seats_left} seats left</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  return `<div class="cards-wrap">${cards}</div>`;
+}
+
+function renderFlightDetails(f) {
+  return `
+    <div class="detail-card">
+      <div class="detail-title">✈ ${escHtml(f.airline)} ${escHtml(f.flight_no)}</div>
+      <div class="detail-row">
+        <span class="detail-label">Route</span>
+        <span class="detail-val">${escHtml(f.origin)} → ${escHtml(f.destination)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Date</span>
+        <span class="detail-val">${escHtml(f.date)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Time</span>
+        <span class="detail-val">${escHtml(f.departure)} – ${escHtml(f.arrival)} (${escHtml(f.duration)})</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Class</span>
+        <span class="detail-val">${escHtml(f.class)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Stops</span>
+        <span class="detail-val">${escHtml(f.stops_label)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Refundable</span>
+        <span class="detail-val" style="color:${f.refundable ? '#34d399' : '#f87171'}">${f.refundable ? '✓ Yes' : '✗ No'}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Baggage</span>
+        <span class="detail-val">${escHtml(f.baggage)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Cancellation</span>
+        <span class="detail-val" style="font-size:12px; max-width:280px; text-align:right">${escHtml(f.cancellation_policy)}</span>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Fare Breakdown</div>
+        <div class="fare-row">
+          <span class="detail-label">Base fare × ${f.passengers}</span>
+          <span>₹${(f.fare.base * f.passengers).toLocaleString()}</span>
+        </div>
+        <div class="fare-row">
+          <span class="detail-label">Taxes & fees</span>
+          <span>₹${(f.fare.taxes * f.passengers).toLocaleString()}</span>
+        </div>
+        <div class="fare-row fare-total">
+          <span class="detail-label">Total</span>
+          <span class="detail-val">₹${f.fare.total.toLocaleString()}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Hotel results rendering ────────────────────────────────────
+
+function renderHotelResults(hotels) {
+  const cards = hotels.map((h, i) => {
+    const stars = '★'.repeat(h.stars) + '☆'.repeat(5 - h.stars);
+    const amenityTags = h.amenities.slice(0, 4).map(a =>
+      `<span class="hc-amenity">${escHtml(a)}</span>`).join('');
+    const bfast = h.breakfast_included
+      ? `<span class="fc-badge refund">🍳 Breakfast incl.</span>`
+      : `<span class="fc-badge no-refund">No breakfast</span>`;
+    return `
+      <div class="hotel-card" onclick="sendQuick('Option ${i+1}')">
+        <div class="hc-header">
+          <span class="hc-option">Option ${i+1}</span>
+          <div style="text-align:right">
+            <div class="hc-stars">${stars}</div>
+            <div style="font-size:11px; color:var(--text3)">${h.reviews?.toLocaleString() || ''} reviews</div>
+          </div>
+        </div>
+        <div class="hc-name">${escHtml(h.name)}</div>
+        <div class="hc-location">📍 ${escHtml(h.location)}</div>
+        <div class="hc-room">🛏 ${escHtml(h.room_type)}</div>
+        <div class="hc-amenities">
+          ${amenityTags}
+          ${h.amenities.length > 4 ? `<span class="hc-amenity">+${h.amenities.length - 4} more</span>` : ''}
+        </div>
+        <div class="hc-footer">
+          <div>
+            <div class="hc-price">₹${h.price_per_night.toLocaleString()}<span style="font-size:13px;font-weight:400;color:var(--text3)">/night</span></div>
+            <div class="hc-price-sub">Total: ₹${h.total_price.toLocaleString()} (${h.nights} nights)</div>
+          </div>
+          <div style="text-align:right">
+            <div class="hc-rating">
+              <span class="hc-rating-star">★</span>
+              <span style="font-weight:600">${h.rating}</span>
+            </div>
+            <div style="margin-top:4px">${bfast}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  return `<div class="cards-wrap">${cards}</div>`;
+}
+
+function renderHotelDetails(h) {
+  const stars = '★'.repeat(h.stars) + '☆'.repeat(5 - h.stars);
+  const amenityList = h.amenities.map(a => `<li class="amenity-item">${escHtml(a)}</li>`).join('');
+  return `
+    <div class="detail-card">
+      <div class="detail-title">🏨 ${escHtml(h.name)}</div>
+      <div class="detail-row">
+        <span class="detail-label">Stars</span>
+        <span class="detail-val" style="color:var(--gold)">${stars}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Location</span>
+        <span class="detail-val">${escHtml(h.location)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Room type</span>
+        <span class="detail-val">${escHtml(h.room_type)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Check-in</span>
+        <span class="detail-val">${escHtml(h.checkin)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Check-out</span>
+        <span class="detail-val">${escHtml(h.checkout)}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Nights</span>
+        <span class="detail-val">${h.nights}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Guests</span>
+        <span class="detail-val">${h.guests}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Rating</span>
+        <span class="detail-val">★ ${h.rating} (${h.reviews?.toLocaleString() || ''} reviews)</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Breakfast</span>
+        <span class="detail-val" style="color:${h.breakfast_included ? '#34d399' : '#f87171'}">${h.breakfast_included ? '✓ Included' : '✗ Not included'}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Cancellation</span>
+        <span class="detail-val" style="font-size:12px; max-width:280px; text-align:right">${escHtml(h.cancellation_policy)}</span>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Amenities</div>
+        <ul class="amenity-list">${amenityList}</ul>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Pricing</div>
+        <div class="fare-row">
+          <span class="detail-label">Per night</span>
+          <span>₹${h.price_per_night.toLocaleString()}</span>
+        </div>
+        <div class="fare-row">
+          <span class="detail-label">Nights</span>
+          <span>${h.nights}</span>
+        </div>
+        <div class="fare-row fare-total">
+          <span class="detail-label">Total</span>
+          <span class="detail-val">₹${h.total_price.toLocaleString()}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Booking summary & confirm ──────────────────────────────────
+
+function renderBookingSummary(data, type) {
+  if (type === 'flight') {
+    const f = data.flight, p = data.passenger;
+    return `
+      <div class="summary-card">
+        <div class="summary-title">📋 Booking Summary — Please Confirm</div>
+        <div class="detail-row"><span class="detail-label">Flight</span><span class="detail-val">${escHtml(f.airline)} ${escHtml(f.flight_no)}</span></div>
+        <div class="detail-row"><span class="detail-label">Route</span><span class="detail-val">${escHtml(f.origin)} → ${escHtml(f.destination)}</span></div>
+        <div class="detail-row"><span class="detail-label">Date & Time</span><span class="detail-val">${escHtml(f.date)} · ${escHtml(f.departure)}</span></div>
+        <div class="detail-row"><span class="detail-label">Passengers</span><span class="detail-val">${f.passengers}</span></div>
+        <div class="detail-row"><span class="detail-label">Passenger</span><span class="detail-val">${escHtml(p.name)}</span></div>
+        <div class="detail-row"><span class="detail-label">Email</span><span class="detail-val">${escHtml(p.email)}</span></div>
+        <div class="detail-row fare-total"><span class="detail-label">Total</span><span class="detail-val">₹${f.fare.total.toLocaleString()}</span></div>
+      </div>`;
+  } else {
+    const h = data.hotel, g = data.guest;
+    return `
+      <div class="summary-card">
+        <div class="summary-title">📋 Booking Summary — Please Confirm</div>
+        <div class="detail-row"><span class="detail-label">Hotel</span><span class="detail-val">${escHtml(h.name)}</span></div>
+        <div class="detail-row"><span class="detail-label">Room</span><span class="detail-val">${escHtml(h.room_type)}</span></div>
+        <div class="detail-row"><span class="detail-label">Check-in</span><span class="detail-val">${escHtml(h.checkin)}</span></div>
+        <div class="detail-row"><span class="detail-label">Check-out</span><span class="detail-val">${escHtml(h.checkout)}</span></div>
+        <div class="detail-row"><span class="detail-label">Nights</span><span class="detail-val">${h.nights}</span></div>
+        <div class="detail-row"><span class="detail-label">Guest</span><span class="detail-val">${escHtml(g.name)}</span></div>
+        <div class="detail-row"><span class="detail-label">Email</span><span class="detail-val">${escHtml(g.email)}</span></div>
+        <div class="detail-row fare-total"><span class="detail-label">Total</span><span class="detail-val">₹${h.total_price.toLocaleString()}</span></div>
+      </div>`;
+  }
+}
+
+function renderBookingConfirm(b, service) {
+  const icon = service === 'flight' ? '✈' : '🏨';
+  const label = service === 'flight' ? 'Flight' : 'Hotel';
+  const rows = service === 'flight' ? `
+    <div class="booking-detail-row"><span class="bd-label">Flight</span><span class="bd-val">${escHtml(b.airline)} ${escHtml(b.flight_no)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Route</span><span class="bd-val">${escHtml(b.route)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Date</span><span class="bd-val">${escHtml(b.date)} · ${escHtml(b.departure)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">PNR</span><span class="bd-val" style="font-family:var(--font-mono)">${escHtml(b.pnr)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Class</span><span class="bd-val">${escHtml(b.class)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Passenger</span><span class="bd-val">${escHtml(b.passenger_name)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Email</span><span class="bd-val">${escHtml(b.passenger_email)}</span></div>
+  ` : `
+    <div class="booking-detail-row"><span class="bd-label">Hotel</span><span class="bd-val">${escHtml(b.hotel)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Room</span><span class="bd-val">${escHtml(b.room_type)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Check-in</span><span class="bd-val">${escHtml(b.checkin)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Check-out</span><span class="bd-val">${escHtml(b.checkout)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Guest</span><span class="bd-val">${escHtml(b.guest_name)}</span></div>
+    <div class="booking-detail-row"><span class="bd-label">Email</span><span class="bd-val">${escHtml(b.guest_email)}</span></div>
+  `;
+  return `
+    <div class="booking-confirm">
+      <div class="booking-check">✅</div>
+      <div class="booking-ref">${escHtml(b.booking_ref)}</div>
+      <div class="booking-sub">${label} booking confirmed · ${escHtml(b.confirmed_at)}</div>
+      <div class="booking-details">
+        ${rows}
+      </div>
+      <div class="booking-amount">
+        <span style="color:var(--text3); font-size:13px">Amount Paid</span>
+        <span class="booking-amount-val">${escHtml(b.amount_paid)}</span>
+      </div>
+    </div>`;
+}
+
+function renderMemorySnapshot(data) {
+  return `<div class="memory-card"><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+}
+
+// ── Typing indicator ───────────────────────────────────────────
+
+let typingEl = null;
+function showTyping() {
+  typingEl = document.createElement('div');
+  typingEl.className = 'msg-wrap';
+  typingEl.id = 'typing';
+  typingEl.innerHTML = `
+    <div class="msg-avatar ai">✈</div>
+    <div class="typing-bubble">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>`;
+  document.getElementById('messages').appendChild(typingEl);
+  scrollBottom();
+}
+function hideTyping() {
+  const el = document.getElementById('typing');
+  if (el) el.remove();
+}
+
+// ── Context bar ────────────────────────────────────────────────
+
+function updateContextBar(meta, r) {
+  const ctx = document.getElementById('inputContext');
+  const badge = document.getElementById('contextBadge');
+  const hint = document.getElementById('contextHint');
+
+  if (meta.active !== 'none') {
+    ctx.style.display = 'flex';
+    badge.textContent = meta.active;
+    badge.style.background = meta.active === 'flight'
+      ? 'rgba(59,130,246,0.2)' : 'rgba(16,185,129,0.2)';
+    badge.style.color = meta.active === 'flight' ? '#60a5fa' : '#34d399';
+
+    const step = meta.active === 'flight' ? meta.flight_step : meta.hotel_step;
+    hint.textContent = '· ' + step;
+  } else {
+    ctx.style.display = 'none';
+  }
+
+  // Update placeholder
+  const box = document.getElementById('inputBox');
+  if (r.type === 'asking' && r.data?.hint) {
+    box.placeholder = r.data.hint;
+  } else if (meta.active === 'flight') {
+    box.placeholder = 'Reply about your flight...';
+  } else if (meta.active === 'hotel') {
+    box.placeholder = 'Reply about your hotel...';
+  } else {
+    box.placeholder = 'Ask me to book a flight or hotel...';
+  }
+}
+
+// ── Memory panel ───────────────────────────────────────────────
+
+async function updateMemory() {
+  try {
+    const res  = await fetch(`/api/memory?session_id=${SESSION_ID}`);
+    const data = await res.json();
+    renderMemoryPanel(data);
+  } catch(e) {}
+}
+
+function renderMemoryPanel(data) {
+  const panel = document.getElementById('memoryPanel');
+  const flightStep = data.flight?.step || 'idle';
+  const hotelStep  = data.hotel?.step  || 'idle';
+
+  const svcBadge = (svc) => {
+    const cls = svc === 'none' ? 'none' : svc;
+    return `<span class="mem-badge badge-${cls}">${svc}</span>`;
+  };
+
+  const slotRow = (label, slotData) => {
+    if (!slotData) return '';
+    const cls = slotData.status === 'filled' || slotData.status === 'confirmed' ? 'filled' :
+                slotData.status === 'stale' ? 'stale' : 'empty';
+    const val = slotData.value ? `<span class="mem-val">${escHtml(String(slotData.value))}</span>` : `<span class="mem-val" style="color:var(--text3)">—</span>`;
+    return `<div class="mem-row"><span class="mem-label">${label}</span><span class="mem-badge badge-${cls}">${slotData.status}</span>${val}</div>`;
+  };
+
+  let flight = '', hotel = '';
+  if (data.flight) {
+    const f = data.flight;
+    flight = `
+      <div class="mem-row"><span class="mem-label">Step</span><span class="mem-badge badge-flight">${f.step}</span></div>
+      ${slotRow('Origin', f.origin)} ${slotRow('Dest', f.destination)}
+      ${slotRow('Date', f.travel_date)} ${slotRow('Pax', f.passengers)}
+      ${f.selected ? `<div class="mem-row"><span class="mem-label">Selected</span><span class="mem-val">${escHtml(f.selected)}</span></div>` : ''}
+      ${f.booking_ref ? `<div class="mem-row"><span class="mem-label">Ref</span><span class="mem-val" style="color:var(--green)">${escHtml(f.booking_ref)}</span></div>` : ''}`;
+  }
+  if (data.hotel) {
+    const h = data.hotel;
+    hotel = `
+      <div class="mem-row"><span class="mem-label">Step</span><span class="mem-badge badge-hotel">${h.step}</span></div>
+      ${slotRow('City', h.city)} ${slotRow('Check-in', h.checkin_date)}
+      ${slotRow('Check-out', h.checkout_date)} ${slotRow('Guests', h.guests)}
+      ${h.selected ? `<div class="mem-row"><span class="mem-label">Selected</span><span class="mem-val">${escHtml(h.selected)}</span></div>` : ''}
+      ${h.booking_ref ? `<div class="mem-row"><span class="mem-label">Ref</span><span class="mem-val" style="color:var(--green)">${escHtml(h.booking_ref)}</span></div>` : ''}`;
+  }
+
+  panel.innerHTML = `
+    <div class="mem-row">
+      <span class="mem-label">Active</span>${svcBadge(data.active_service)}
+    </div>
+    <div class="mem-row">
+      <span class="mem-label">Previous</span>${svcBadge(data.previous_service)}
+    </div>
+    <div class="mem-row">
+      <span class="mem-label">Turns</span>
+      <span class="mem-val">${data.turns}</span>
+    </div>
+    <div style="margin: 10px 0; border-top: 1px solid var(--border); padding-top: 10px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;">✈ Flight</div>
+      ${flight || '<div style="color:var(--text3);font-size:11px;">Not started</div>'}
+    </div>
+    <div style="margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;">🏨 Hotel</div>
+      ${hotel || '<div style="color:var(--text3);font-size:11px;">Not started</div>'}
+    </div>`;
+}
+
+// ── Reset session ──────────────────────────────────────────────
+
+async function resetSession() {
+  await fetch('/api/reset', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({session_id: SESSION_ID}),
+  });
+  location.reload();
+}
+
+// ── Markdown parser (simple) ───────────────────────────────────
+
+function renderMarkdown(text) {
+  if (!text) return '';
+  return escHtml(text)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code>$1</code>')
+    .replace(/\n/g, '<br>');
+}
+
+function escHtml(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ── Init ───────────────────────────────────────────────────────
+
+document.getElementById('inputBox').focus();
+</script>
+</body>
+</html>
